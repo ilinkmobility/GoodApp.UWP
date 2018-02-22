@@ -9,5 +9,9 @@ namespace GoodApp.Callback
     public interface IDialogHelper
     {
         void ShowMessageDialog(string message);
+
+        Task<string> PickImageDialog();
+
+        Task<string> PickAudioDialog();
     }
 }

@@ -70,13 +70,18 @@ namespace GoodApp.ViewModels
 
             var response = await FirebaseServiceHelper.Instance.Login(new Model.User { EmailID = EmailID, Password = Password });
 
-            if (response.Code == Utility.Code.EmailNotVerified)
+            if (response.Success == false)
+            {
+                dialogHelper.ShowMessageDialog("Login failed.");
+            }
+            else if (response.Code == Utility.Code.EmailNotVerified)
             {
                 dialogHelper.ShowMessageDialog("Email NOT Verified.");
             }
             else
             {
-                dialogHelper.ShowMessageDialog("Success");
+                navigationService.Navigate("Home", null);
+                navigationService.ClearHistory();
             }
         }
 

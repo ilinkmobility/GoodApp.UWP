@@ -11,4 +11,11 @@ namespace GoodApp.Utility
         Default,
         EmailNotVerified
     }
+
+    public enum UploadFileType
+    {
+        Picture,
+        Audio,
+        Video
+    }
 }
