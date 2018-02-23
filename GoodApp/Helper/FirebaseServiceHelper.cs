@@ -136,6 +136,8 @@ namespace GoodApp.Helper
                 var downloadLink = await uploadTask;
                 
                 InsertUploadInfo(new UploadInfo { Type = uploadFileType.ToString(), DownloadLink = downloadLink });
+
+                uploadCallback.UploadCompleted();
             }
             catch (Exception ex)
             {

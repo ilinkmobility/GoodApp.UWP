@@ -9,5 +9,7 @@ namespace GoodApp.Callback
     public interface IUploadCallback
     {
         void SetUploadPercentage(int percentage);
+
+        void UploadCompleted();
     }
 }

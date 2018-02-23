@@ -45,11 +45,29 @@ namespace GoodApp.ViewModels
             set { SetProperty(ref _audioFilePath, value); }
         }
 
+        string _audioPlayStateIcon;
+        public string AudioPlayStateIcon
+        {
+            get { return _audioPlayStateIcon; }
+            set { SetProperty(ref _audioPlayStateIcon, value); }
+        }
+
         ObservableCollection<Contact> _contacts;
         public ObservableCollection<Contact> Contacts
         {
             get { return _contacts; }
             set { SetProperty(ref _contacts, value); }
+        }
+
+        UploadInfo _selectedPicture;
+        public UploadInfo SelectedPicture
+        {
+            get { return _selectedPicture; }
+            set
+            {
+                SetProperty(ref _selectedPicture, value);
+                IsShowImageViewer = true;
+            }
         }
 
         ObservableCollection<UploadInfo> _pictures;
@@ -59,6 +77,20 @@ namespace GoodApp.ViewModels
             set { SetProperty(ref _pictures, value); }
         }
 
+        UploadInfo _selectedAudio;
+        public UploadInfo SelectedAudio
+        {
+            get { return _selectedAudio; }
+            set { SetProperty(ref _selectedAudio, value); PlaySelectedAudio(); }
+        }
+
+        ObservableCollection<UploadInfo> _audios;
+        public ObservableCollection<UploadInfo> Audios
+        {
+            get { return _audios; }
+            set { SetProperty(ref _audios, value); }
+        }
+
         bool _uploading;
         public bool Uploading
         {
@@ -66,6 +98,13 @@ namespace GoodApp.ViewModels
             set { SetProperty(ref _uploading, value); }
         }
 
+        bool _isShowImageViewer;
+        public bool IsShowImageViewer
+        {
+            get { return _isShowImageViewer; }
+            set { SetProperty(ref _isShowImageViewer, value); }
+        }
+        
         int _uploadPercentage;
         public int UploadPercentage
         {
@@ -81,6 +120,20 @@ namespace GoodApp.ViewModels
 
         public ICommand BrowseAudioCommand { get; set; }
 
+        public ICommand AudioBackCommand { get; set; }
+
+        public ICommand AudioForwardCommand { get; set; }
+
+        public ICommand AudioResumePauseCommand { get; set; }
+
+        public ICommand AudioStopCommand { get; set; }
+
+        public ICommand CloseImageViewerCommand { get; set; }
+
+        public ICommand LeftArrowClickedCommand { get; set; }
+
+        public ICommand RightArrowClickedCommand { get; set; }
+
         private readonly IDialogHelper dialogHelper;
 
         private readonly INavigationService navigationService;
@@ -95,13 +148,31 @@ namespace GoodApp.ViewModels
 
             BrowseAudioCommand = new DelegateCommand(OnBrowseAudioClicked);
 
+            AudioBackCommand = new DelegateCommand(() => { });
+
+            AudioForwardCommand = new DelegateCommand(() => { });
+
+            AudioResumePauseCommand = new DelegateCommand(OnResumePauseAudio);
+
+            AudioStopCommand = new DelegateCommand(() => { });
+
+            CloseImageViewerCommand = new DelegateCommand(() => { IsShowImageViewer = false; });
+
+            LeftArrowClickedCommand = new DelegateCommand(() => { OnChangeImage(true); });
+
+            RightArrowClickedCommand = new DelegateCommand(() => { OnChangeImage(false); });
+
             this.navigationService = navigationService;
 
             this.dialogHelper = dialogHelper;
 
             RefreshContacts();
 
-            RefreshPicturess();
+            RefreshPictures();
+
+            RefreshAudios();
+
+            AudioPlayStateIcon = "/Assets/AudioPlay.png";
         }
 
         async void OnInsertContactClicked()
@@ -173,9 +244,14 @@ namespace GoodApp.ViewModels
             }
         }
 
-        async void RefreshPicturess()
+        async void RefreshPictures()
         {
             Pictures = await GetDownloadLinks(UploadFileType.Picture);
+        }
+
+        async void RefreshAudios()
+        {
+            Audios = await GetDownloadLinks(UploadFileType.Audio);
         }
 
         public void SetUploadPercentage(int percentage)
@@ -187,8 +263,6 @@ namespace GoodApp.ViewModels
                 if (percentage == 100)
                 {
                     //dialogHelper.ShowMessageDialog("File uploaded successflly!");
-
-                    RefreshPicturess();
                 }
                 return;
             }
@@ -205,6 +279,60 @@ namespace GoodApp.ViewModels
             }
 
             return new ObservableCollection<UploadInfo>();
+        }
+
+        public void UploadCompleted()
+        {
+            RefreshPictures();
+
+            RefreshAudios();
+        }
+
+        void OnChangeImage(bool isBack)
+        {
+            if (SelectedPicture != null)
+            {
+                if (isBack)
+                {
+                    int index = Pictures.IndexOf(SelectedPicture);
+                    if (index != 0)
+                    {
+                        SelectedPicture = Pictures[index - 1];
+                    }
+                }
+                else
+                {
+                    int index = Pictures.IndexOf(SelectedPicture);
+                    if (index != (Pictures.Count-1))
+                    {
+                        SelectedPicture = Pictures[index + 1];
+                    }
+                }
+            }
+        }
+
+        void PlaySelectedAudio()
+        {
+            MediaPlayerHelper.Instance.StartAudio(SelectedAudio.DownloadLink);
+            MediaPlayerHelper.Instance.IsPlaying = true;
+            AudioPlayStateIcon = "/Assets/AudioPause.png";
+        }
+
+        void OnResumePauseAudio()
+        {
+            if (SelectedAudio != null)
+            {
+                if (MediaPlayerHelper.Instance.IsPlaying)
+                {
+                    MediaPlayerHelper.Instance.Pause();
+                    AudioPlayStateIcon = "/Assets/AudioPlay.png";
+                }
+                else
+                {
+                    MediaPlayerHelper.Instance.Resume();
+                    AudioPlayStateIcon = "/Assets/AudioPause.png";
+                }
+            }
         }
     }
 }

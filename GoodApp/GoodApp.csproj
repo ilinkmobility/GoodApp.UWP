@@ -98,6 +98,7 @@
     <Compile Include="Callback\IDialogHelper.cs" />
     <Compile Include="Callback\IUploadCallback.cs" />
     <Compile Include="Helper\FirebaseServiceHelper.cs" />
+    <Compile Include="Helper\MediaPlayerHelper.cs" />
     <Compile Include="Model\Contact.cs" />
     <Compile Include="Model\Response.cs" />
     <Compile Include="Model\UploadInfo.cs" />
@@ -139,8 +140,15 @@
     <None Include="GoodApp_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\AudioBack.png" />
+    <Content Include="Assets\AudioForward.png" />
+    <Content Include="Assets\AudioPause.png" />
+    <Content Include="Assets\AudioPlay.png" />
+    <Content Include="Assets\AudioStop.png" />
+    <Content Include="Assets\Close.png" />
     <Content Include="Assets\Delete.png" />
-    <Content Include="Assets\LoginBackground.jpg" />
+    <Content Include="Assets\LeftArrow.png" />
+    <Content Include="Assets\RightArrow.png" />
     <Content Include="Assets\Tick.png" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />

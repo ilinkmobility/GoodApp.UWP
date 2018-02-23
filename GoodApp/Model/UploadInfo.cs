@@ -13,5 +13,7 @@ namespace GoodApp.Model
         public string DownloadLink { get; set; }
 
         public string DateTime { get; set; }
+
+        public string FileName { get { return System.IO.Path.GetFileName(new Uri(DownloadLink).LocalPath); } }
     }
 }

@@ -35,6 +35,7 @@
             DesiredWidth="150"
             ItemHeight="150"
             ItemsSource="{Binding Pictures}"
+            SelectedItem="{Binding SelectedPicture, Mode=TwoWay}"
             SelectionMode="Single">
             <controls:AdaptiveGridView.ItemTemplate>
                 <DataTemplate>
